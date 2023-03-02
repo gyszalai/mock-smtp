@@ -64,7 +64,6 @@
     "cz-conventional-changelog": "^3.3.0",
     "dockerode": "^3.3.4",
     "eslint": "^8.34.0",
-    "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
     "mocha": "^10.2.0",
     "rimraf": "^4.1.2",
@@ -79,6 +78,7 @@
     "env-schema": "^5.2.0",
     "fastify": "^4.13.0",
     "fastify-plugin": "^4.5.0",
+    "husky": "^8.0.3",
     "mailparser": "^3.6.3",
     "pino": "^8.10.0",
     "smtp-server": "^3.11.0"
