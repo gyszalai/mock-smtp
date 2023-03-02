@@ -22,6 +22,9 @@
       "test/main.spec.ts"
     ]
   },
+  "lint-staged": {
+    "*.ts": "eslint --cache --fix"
+  },
   "config": {
     "docker_ns": "gyszalai"
   },
