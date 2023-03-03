@@ -5,6 +5,20 @@
   "main": "dist/index.js",
   "type": "module",
   "private": true,
+  "author": "Gyula Szalai <gyszalai@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gyszalai/mock-smtp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gyszalai/mock-smtp/issues"
+  },
+  "homepage": "https://github.com/gyszalai/mock-smtp#readme",
+  "keywords": ["mock", "smtp"],
+  "config": {
+    "docker_ns": "gyszalai"
+  },
   "mocha": {
     "diff": true,
     "color": true,
@@ -25,8 +39,8 @@
   "lint-staged": {
     "*.ts": "eslint --cache --fix"
   },
-  "config": {
-    "docker_ns": "gyszalai"
+  "engines": {
+    "node": ">=18.14.0"
   },
   "scripts": {
     "prepare": "husky install",
@@ -37,19 +51,17 @@
     "docker:publish": "npm run docker:build && docker tag $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:latest",
     "prerelease": "git pull && npm run lint && npm run build && npm test",
     "release": "semantic-release --no-ci",
-    "postrelease": "git push && git push --tags && echo 'released: '$npm_package_version && npm publish"
+    "postrelease": "git push && git push --tags && echo 'released: '$npm_package_version && npm run docker:publish"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gyszalai/mock-smtp.git"
+  "dependencies": {
+    "env-schema": "^5.2.0",
+    "fastify": "^4.13.0",
+    "fastify-plugin": "^4.5.0",
+    "husky": "^8.0.3",
+    "mailparser": "^3.6.3",
+    "pino": "^8.10.0",
+    "smtp-server": "^3.11.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/gyszalai/mock-smtp/issues"
-  },
-  "homepage": "https://github.com/gyszalai/mock-smtp#readme",
   "devDependencies": {
     "@commitlint/cli": "^17.4.4",
     "@commitlint/config-conventional": "^17.4.4",
@@ -81,14 +93,5 @@
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
     "wait-on": "^7.0.1"
-  },
-  "dependencies": {
-    "env-schema": "^5.2.0",
-    "fastify": "^4.13.0",
-    "fastify-plugin": "^4.5.0",
-    "husky": "^8.0.3",
-    "mailparser": "^3.6.3",
-    "pino": "^8.10.0",
-    "smtp-server": "^3.11.0"
   }
 }
