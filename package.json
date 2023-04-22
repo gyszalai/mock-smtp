@@ -2,7 +2,7 @@
   "name": "mock-smtp",
   "version": "1.0.0",
   "description": "Mock SMTP server for integration tests",
-  "main": "dist/index.js",
+  "main": "dist/smtp-server.js",
   "type": "module",
   "private": true,
   "author": "Gyula Szalai <gyszalai@gmail.com>",
@@ -32,8 +32,8 @@
       "ts-node/register"
     ],
     "spec": [
-      "src/**/*.spec.ts",
-      "test/main.spec.ts"
+      "test/with-docker.spec.ts",
+      "test/without-docker.spec.ts"
     ]
   },
   "lint-staged": {

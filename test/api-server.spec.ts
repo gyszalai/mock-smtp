@@ -3,7 +3,6 @@ import { it, describe } from "mocha"
 import  supertest from "supertest"
 import { SendMailOptions } from "nodemailer"
 
-// import { Message } from "../dist/message-store.js"
 import messages, { HeaderObject, AddressObject } from "./messages.js"
 
 export default (httpPort: number): void => {
@@ -67,6 +66,21 @@ export default (httpPort: number): void => {
             return api
                 .get("/messages")
                 .query({ from: from.address })
+                .expect(200)
+                .expect("Content-Type", "application/json; charset=utf-8")
+                .expect((res) => {
+                    const messageListRes = res.body
+                    expect(messageListRes.length).to.be.equal(1)
+                    expect(messageListRes[0].from.address).to.equal(from.address)
+                })
+        })
+        it("GET /messages with 'from' and 'to' params should return the appropriate e-mail message", async () => {
+            const from = messages[1].from as AddressObject
+            const toArray = messages[1].to as AddressObject[]
+            const to = toArray[0] as AddressObject
+            return api
+                .get("/messages")
+                .query({ from: from.address, to: to.address })
                 .expect(200)
                 .expect("Content-Type", "application/json; charset=utf-8")
                 .expect((res) => {

@@ -1,4 +1,4 @@
-FROM node:18.14.2-alpine
+FROM node:18.16.0-alpine
 
 RUN adduser -D -u 2000 -g 2000 app
 RUN apk add --update openssl bash curl make g++ gcc && rm -rf /tmp/* /var/cache/apk/*

@@ -1,13 +1,8 @@
 import { Logger } from "pino"
 import Fastify from "fastify"
 
-import { Config } from "./config.js"
 import { MessageStore } from "./message-store.js"
-
-export interface ApiServer {
-    start(): Promise<void>
-    close(): Promise<void>
-}
+import { ClosableServer } from "./types.js"
 
 interface FilterQueryString {
     messageType: string
@@ -18,7 +13,7 @@ interface FilterQueryString {
     reverse: boolean
 }
 
-export default (logger: Logger, config: Config, messageStore: MessageStore): ApiServer => {
+export default (logger: Logger, httpPort: number, messageStore: MessageStore): ClosableServer => {
     const app = Fastify({ logger })
     const filterSchema = {
         querystring: {
@@ -36,7 +31,7 @@ export default (logger: Logger, config: Config, messageStore: MessageStore): Api
     })
     app.get<{ Querystring: FilterQueryString }>("/messages", { schema: filterSchema }, async (request) => {
         const { messageType, from, to, cc, count, reverse } = request.query
-        return messageStore.findMessages(messageType, from, to, cc, count, reverse)
+        return messageStore.findMessages({ messageType, from, to, cc }, count, reverse)
     })
     app.delete("/messages", async (request, reply) => {
         messageStore.clear()
@@ -46,7 +41,7 @@ export default (logger: Logger, config: Config, messageStore: MessageStore): Api
     return {
         async start(): Promise<void> {
             await app.ready()
-            await app.listen({ host: "0.0.0.0", port: config.HTTP_PORT })
+            await app.listen({ host: "0.0.0.0", port: httpPort })
         },
         async close(): Promise<void> {
             logger.info("Stopping API server")

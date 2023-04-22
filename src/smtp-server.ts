@@ -2,31 +2,33 @@ import { Logger } from "pino"
 import { SMTPServer } from "smtp-server"
 import { ParsedMail, simpleParser } from "mailparser"
 
-import { MessageStore } from "./message-store.js"
-import { Config } from "./config.js"
+import { ClosableServer, SmtpConfig } from "./types.js"
+import createMessageStore, { MessageStore } from "./message-store.js"
 
-export interface SmtpServer {
-    start(): Promise<void>
-    close(): Promise<void>
+export interface MockSmtpServer extends ClosableServer {
+    getMessageStore(): MessageStore
 }
 
-export default function (
-    logger: Logger, config: Config, key: Buffer, cert: Buffer, 
-    messageStore: MessageStore
-): SmtpServer {
-    const smtpPort = config.SMTP_PORT
-    const smtpSecure = config.SMTP_SECURE
-    const smtpUser = config.SMTP_USER
-    const smtpPassword = config.SMTP_PASSWORD
+export { SmtpConfig } from "./types.js"
 
+/**
+ * Creates an SMTP server instance
+ * @param logger Pino logger
+ * @param smtpConfig SMTP server configuration
+ * @param maxMessageCount The number of received e-mail messages to keep in the message store
+ * @returns A closable mock SMTP sserver instance
+ */
+export default function (logger: Logger, smtpConfig: SmtpConfig, maxMessageCount: number): MockSmtpServer {
+    const messageStore = createMessageStore(logger, maxMessageCount)
+    const { port, username: _username, password: _password, secure, key, cert } = smtpConfig
     const smtpServer = new SMTPServer({
-        secure: smtpSecure,
+        secure,
         key,
         cert,
         authMethods: ["LOGIN"],
         onAuth ({ method, username, password }, session, callback) {
             logger.debug("authenticating, method: " + method)
-            if (username === smtpUser && password === smtpPassword) {
+            if (username === _username && password === _password) {
                 logger.debug("auth OK")
                 return callback(null, { user: username })
             }
@@ -53,7 +55,7 @@ export default function (
     async function start () {
         await new Promise<void>((resolve, reject) => {
             smtpServer.on("error", reject)
-            smtpServer.listen(smtpPort, "0.0.0.0", () => {
+            smtpServer.listen(port, "0.0.0.0", () => {
                 smtpServer.removeListener("error", reject)
                 resolve()
             })
@@ -61,7 +63,7 @@ export default function (
         smtpServer.on("error", (err) => {
             logger.error(err, "SMTP server error")
         })
-        logger.info(`SMTP server listening on port ${smtpPort}`)
+        logger.info(`SMTP server listening on port ${port}`)
     }
 
     /** Closes the SMTP and HTTP servers */
@@ -74,7 +76,15 @@ export default function (
         })
     }
 
+    /**
+     * Returns the message store in which this server stores the received e-mail messages
+     * @returns The message store
+     */
+    function getMessageStore(): MessageStore {
+        return messageStore
+    }
+
     return {
-        start, close
+        start, close, getMessageStore
     }
 }

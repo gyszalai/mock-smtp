@@ -1,7 +1,8 @@
 import { Logger } from "pino"
 import { envSchema, JSONSchemaType } from "env-schema"
+import { Config } from "./types.js"
 
-export interface Config {
+interface EnvConfig {
     LOGLEVEL: string
     HTTP_PORT: number
     SMTP_PORT: number
@@ -11,7 +12,7 @@ export interface Config {
     MAX_MESSAGE_COUNT: number
 }
 
-const schema: JSONSchemaType<Config> = {
+const schema: JSONSchemaType<EnvConfig> = {
     type: "object",
     required: [],
     properties: {
@@ -46,11 +47,25 @@ const schema: JSONSchemaType<Config> = {
     }
 }
 
+/**
+ * Reads and validates the configuration 
+ * @param logger 
+ * @returns 
+ */
 export default function (logger: Logger): Config {
     logger.debug("loading configuration...")
-    const config = envSchema({
-        schema
-    })
-    logger.debug({ config }, "configuration loaded")
+    const envConfig = envSchema({ schema })
+    const config = {
+        loglevel: envConfig.LOGLEVEL,
+        httpPort: envConfig.HTTP_PORT,
+        smtp: {
+            port: envConfig.SMTP_PORT,
+            secure: envConfig.SMTP_SECURE,
+            username: envConfig.SMTP_USER,
+            password: envConfig.SMTP_PASSWORD
+        },
+        maxMessageCount: envConfig.MAX_MESSAGE_COUNT
+    }
+    logger.debug({ config: envConfig }, "configuration loaded")
     return config
 }

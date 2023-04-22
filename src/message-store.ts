@@ -18,8 +18,15 @@ export interface Message {
     attachments?: Attachment[] | undefined
 }
 
+export interface FindMessageOptions {
+    messageType?: string
+    from?: string
+    to?: string
+    cc?: string
+}
+
 export interface MessageStore {
-    findMessages (messageType: string, from: string, to: string, cc: string, count: number, reverse: boolean): Message[]
+    findMessages (options: FindMessageOptions, count: number, reverse: boolean): Message[]
     addMessage(parsedMail: ParsedMail): Message
     clear(): void
 }
@@ -59,7 +66,7 @@ export default function (logger: Logger, maxStoreCapacity: number): MessageStore
     const messages: Message[] = []
 
     return {
-        findMessages (messageType: string, from: string, to: string, cc: string, count: number, reverse: boolean): Message[] {
+        findMessages ({ messageType, from, to, cc }, count: number, reverse: boolean): Message[] {
             const messageList: Message[] = reverse ? [...messages].reverse() : messages
             let filteredMessageList: Message[] = messageList
             if (messageType) {

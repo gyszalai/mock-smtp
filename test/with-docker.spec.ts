@@ -1,17 +1,10 @@
-import fs from "fs"
 import path from "path"
 import createDebug from "debug"
 import waitOn from "wait-on"
 import "chai"
-import pino from "pino"
 import Docker from "dockerode"
 import { describe, before, after } from "mocha"
 import { fileURLToPath } from "url"
-
-import { Config } from "../dist/config.js"
-import createMessageStore from "../dist/message-store.js"
-import createApiServer, { ApiServer } from "../dist/api-server.js"
-import createSmtpServer, { SmtpServer } from "../dist/smtp-server.js"
 
 import createApiServerTests from "./api-server.spec.js"
 import createSmtpServerTests from "./smtp-server.spec.js"
@@ -20,9 +13,9 @@ const debug = createDebug("test")
 
 const smtpPort = 1025
 const httpPort = 1080
-const user = "mySmtpUser"
-const pass = "mySmtpPassword"
-const maxMessages = 100
+const username = "mySmtpUser"
+const password = "mySmtpPassword"
+const maxMessageCount = 100
 
 const docker = new Docker({ socketPath: "/var/run/docker.sock" })
 
@@ -66,10 +59,10 @@ describe("Mock SMTP server with Docker", () => {
                 "LOGLEVEL=debug",
                 `SMTP_PORT=${smtpPort}`,
                 `HTTP_PORT=${httpPort}`,
-                `SMTP_USER=${user}`,
-                `SMTP_PASSWORD=${pass}`,
+                `SMTP_USER=${username}`,
+                `SMTP_PASSWORD=${password}`,
                 "SMTP_SECURE=true",
-                `MAX_MESSAGE_COUNT=${maxMessages}`
+                `MAX_MESSAGE_COUNT=${maxMessageCount}`
             ]
         })
         debug("*** container created")
@@ -78,7 +71,7 @@ describe("Mock SMTP server with Docker", () => {
         // const cntStream = await container.attach({ stream: true, stdout: true, stderr: true })
         // cntStream.pipe(process.stdout)
         debug("*** container started")
-        await waitOn({ resources: [`tcp:localhost:${smtpPort}`, `http://localhost:${httpPort}`], delay: 500, timeout: 10000, log: true })
+        await waitOn({ resources: [`tcp:localhost:${smtpPort}`, `http://localhost:${httpPort}`], delay: 500, timeout: 10000, log: false })
     })
 
     after(async function () {
@@ -102,48 +95,7 @@ describe("Mock SMTP server with Docker", () => {
         }
     }
 
-    createSmtpServerTests(smtpPort, user, pass)
+    createSmtpServerTests(smtpPort, username, password)
     createApiServerTests(httpPort)
 })
 
-describe("Mock SMTP server without Docker", () => {
-    const transport = pino.transport({
-        target: "pino/file",
-        options: { destination: "/dev/null" }
-    })
-    const logger = pino(transport)
-    let smtpServer: SmtpServer
-    let apiServer: ApiServer
-    before(async function () {
-        this.timeout(10000)
-        const config: Config = {
-            LOGLEVEL: "debug",
-            HTTP_PORT: httpPort,
-            SMTP_PORT: smtpPort,
-            SMTP_USER: user,
-            SMTP_PASSWORD: pass,
-            SMTP_SECURE: true,
-            MAX_MESSAGE_COUNT: maxMessages
-        }
-        const messageStore = createMessageStore(logger, maxMessages)
-        const key = fs.readFileSync(path.join(dirname, "..", "keys", "smtp.server.privkey.pem"))
-        const cert = fs.readFileSync(path.join(dirname, "..", "keys", "smtp.server.cert.pem"))
-        smtpServer = createSmtpServer(logger, config, key, cert, messageStore)
-        apiServer = createApiServer(logger, config, messageStore)
-        debug("*** starting SMTP server")
-        await smtpServer.start()
-        debug("*** SMTP server started")
-        await apiServer.start()
-        debug("*** API server started")
-    })
-
-    after(async function () {
-        await apiServer.close()
-        debug("*** API server stopped")
-        await smtpServer.close()
-        debug("*** SMTP server stopped")
-    })
-
-    createSmtpServerTests(smtpPort, user, pass)
-    createApiServerTests(httpPort)
-})
