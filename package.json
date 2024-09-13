@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Mock SMTP server for integration tests",
   "main": "dist/smtp-server.js",
+  "files": ["dist", "src"],
   "type": "module",
   "private": true,
   "author": "Gyula Szalai <gyszalai@gmail.com>",
@@ -44,7 +45,7 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "lint": "eslint --ignore-path .gitignore --fix src/**/*.ts",
     "test": "npm run build && mocha",
     "docker:build": "docker build -t $npm_package_config_docker_ns/$npm_package_name:latest .",
