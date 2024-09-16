@@ -63,8 +63,16 @@ const messages: SendMailOptions[] = [
         to: [{ name: "Receiver Name 6", address: "receiver.name6@somedomain.xyz" }],
         subject: "Some subject 6",
         text: "This is the message body 6",
+        html: "<p>This is the message body 6 as HTML</p>",
         messageId: "my_message_id6",
-        headers: { "x-message-type": "myMessageType6" }
+        headers: { "x-message-type": "myMessageType6" },
+        attachments: [
+            {
+                filename: 'text1.txt',
+                content: 'aGVsbG8gd29ybGQh',
+                encoding: 'base64'
+            }
+        ]
     }
 ]
 

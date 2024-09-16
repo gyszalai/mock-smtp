@@ -119,6 +119,22 @@ export default (httpPort: number): void => {
                     expect(messageListRes[1].cc).to.deep.include(cc)
                 })
         })
+        it("GET /messages with 'messageType=myMessageType6' param should return the appropriate e-mail message, that has an attachment", async () => {
+            const message6 = messages[5]
+            return api
+                .get("/messages")
+                .query({ messageType: 'myMessageType6' })
+                .expect(200)
+                .expect("Content-Type", "application/json; charset=utf-8")
+                .expect((res) => {
+                    const messageListRes = res.body
+                    console.log('messages:', JSON.stringify(messageListRes))
+                    expect(messageListRes.length).to.be.equal(1)
+                    const message6Res = messageListRes[0]
+                    expect(message6Res.messageId).to.equal(message6.messageId)
+                    expect(message6Res.attachments?.length).to.equal(1)
+                })
+        })
         it("DELETE /messages should delete the messages and respond with HTTP 204", async () => {
             await api.delete("/messages").expect(204)
             return api
