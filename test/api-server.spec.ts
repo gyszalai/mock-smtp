@@ -128,7 +128,6 @@ export default (httpPort: number): void => {
                 .expect("Content-Type", "application/json; charset=utf-8")
                 .expect((res) => {
                     const messageListRes = res.body
-                    console.log('messages:', JSON.stringify(messageListRes))
                     expect(messageListRes.length).to.be.equal(1)
                     const message6Res = messageListRes[0]
                     expect(message6Res.messageId).to.equal(message6.messageId)

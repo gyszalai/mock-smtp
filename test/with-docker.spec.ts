@@ -32,7 +32,7 @@ describe("Mock SMTP server with Docker", () => {
         await removeContainer()
         debug("*** Building image, context path:", contextPath)
         const imgStream = await docker.buildImage(
-            { context: contextPath, src: ["Dockerfile", "dist", "keys", "package.json", "package-lock.json"] },
+            { context: contextPath, src: ["Dockerfile", "dist", "keys", "src", "tsconfig.json", "package.json", "package-lock.json"] },
             { t: imageName }
         )
         await new Promise((resolve, reject) => {
