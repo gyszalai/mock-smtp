@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/gyszalai/mock-smtp/compare/v1.0.0...v1.0.1) (2024-09-16)
+
+
+### Bug Fixes
+
+* fix docker:publish script in package.json ([4bd6e74](https://github.com/gyszalai/mock-smtp/commit/4bd6e74044e69505229bcd6bfbe3d4b21714ce69))
+
 # 1.0.0 (2023-03-02)
 
 

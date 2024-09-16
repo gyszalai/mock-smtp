@@ -1,6 +1,6 @@
 {
     "name": "@gyszalai/mock-smtp",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Mock SMTP server for integration tests",
     "main": "dist/smtp-server.js",
     "files": [
