@@ -48,9 +48,9 @@ const schema: JSONSchemaType<EnvConfig> = {
 }
 
 /**
- * Reads and validates the configuration 
- * @param logger 
- * @returns 
+ * Reads and validates the configuration
+ * @param logger
+ * @returns
  */
 export default function (logger: Logger): Config {
     logger.debug("loading configuration...")

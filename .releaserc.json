@@ -1,17 +1,17 @@
 {
-	"debug": false,
-	"repositoryUrl": "ssh://git@github.com/gyszalai/mock-smtp.git",
+    "debug": false,
+    "repositoryUrl": "ssh://git@github.com/gyszalai/mock-smtp.git",
     "branches": ["main"],
-	"plugins": [
-		"@semantic-release/commit-analyzer",
-		"@semantic-release/release-notes-generator",
-		"@semantic-release/changelog",
-		[
-			"@semantic-release/npm",
-			{
-				"npmPublish": false
-			}
-		],
-		"@semantic-release/git"
-	]
+    "plugins": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/release-notes-generator",
+        "@semantic-release/changelog",
+        [
+            "@semantic-release/npm",
+            {
+                "npmPublish": false
+            }
+        ],
+        "@semantic-release/git"
+    ]
 }

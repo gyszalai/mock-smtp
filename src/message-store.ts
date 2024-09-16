@@ -26,12 +26,12 @@ export interface FindMessageOptions {
 }
 
 export interface MessageStore {
-    findMessages (options: FindMessageOptions, count: number, reverse: boolean): Message[]
+    findMessages(options: FindMessageOptions, count: number, reverse: boolean): Message[]
     addMessage(parsedMail: ParsedMail): Message
     clear(): void
 }
 
-function createMessage (parsedMail: ParsedMail): Message {
+function createMessage(parsedMail: ParsedMail): Message {
     const headers = formatHeaders(parsedMail.headers)
     const messageType = headers["x-message-type"]?.toString()
     const from = parsedMail.from?.value[0] ?? { name: "Empty sender" }
@@ -54,8 +54,8 @@ function createMessage (parsedMail: ParsedMail): Message {
     return { messageId, messageType, headers, from, to, cc, subject, html, text, attachments }
 }
 
-function formatHeaders (headers: Headers): HeaderObject {
-    const obj: HeaderObject  = {}
+function formatHeaders(headers: Headers): HeaderObject {
+    const obj: HeaderObject = {}
     for (const [headerName, headerValue] of headers) {
         obj[headerName] = headerValue
     }
@@ -66,7 +66,7 @@ export default function (logger: Logger, maxStoreCapacity: number): MessageStore
     const messages: Message[] = []
 
     return {
-        findMessages ({ messageType, from, to, cc }, count: number, reverse: boolean): Message[] {
+        findMessages({ messageType, from, to, cc }, count: number, reverse: boolean): Message[] {
             const messageList: Message[] = reverse ? [...messages].reverse() : messages
             let filteredMessageList: Message[] = messageList
             if (messageType) {
@@ -79,7 +79,9 @@ export default function (logger: Logger, maxStoreCapacity: number): MessageStore
                 filteredMessageList = filteredMessageList.filter((message) => message.to?.some((e) => e.address === to))
             }
             if (cc) {
-                filteredMessageList = filteredMessageList.filter((message) => message.cc && message.cc.some((e) => e.address === cc))
+                filteredMessageList = filteredMessageList.filter(
+                    (message) => message.cc && message.cc.some((e) => e.address === cc)
+                )
             }
             if (count !== undefined && count < filteredMessageList.length) {
                 filteredMessageList = filteredMessageList.slice(0, count)
@@ -107,6 +109,4 @@ export default function (logger: Logger, maxStoreCapacity: number): MessageStore
             messages.splice(0, messages.length)
         }
     }
-
 }
-

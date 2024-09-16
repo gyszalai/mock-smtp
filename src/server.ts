@@ -16,7 +16,7 @@ export { Config, ClosableServer } from "./types.js"
 export default function (logger: Logger, config: Config): ClosableServer {
     let apiServer: ClosableServer
     let smtpServer: MockSmtpServer
-    
+
     /** Starts the SMTP and HTTP servers */
     async function start() {
         const { httpPort, smtp, maxMessageCount } = config
@@ -31,7 +31,7 @@ export default function (logger: Logger, config: Config): ClosableServer {
     }
 
     /** Closes the API and the SMTP servers */
-    async function close() {        
+    async function close() {
         const promises = []
         if (apiServer) {
             promises.push(apiServer.close())
@@ -43,6 +43,7 @@ export default function (logger: Logger, config: Config): ClosableServer {
     }
 
     return {
-        start, close
+        start,
+        close
     }
 }

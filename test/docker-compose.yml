@@ -1,17 +1,17 @@
-version: '3'
+version: "3"
 services:
-  mock-smtp-server:
-      environment:
-          LOGLEVEL: debug
-          SMTP_PORT: 1025
-          HTTP_PORT: 1080
-          SMTP_SECURE: "true"
-          SMTP_USER: user
-          SMTP_PASSWORD: password
-          MAX_MESSAGE_COUNT: 50
-      build: ..
-      container_name: smtp-server
-      restart: always
-      ports:
-          - "1025:1025"
-          - "1080:1080"
+    mock-smtp-server:
+        environment:
+            LOGLEVEL: debug
+            SMTP_PORT: 1025
+            HTTP_PORT: 1080
+            SMTP_SECURE: "true"
+            SMTP_USER: user
+            SMTP_PASSWORD: password
+            MAX_MESSAGE_COUNT: 50
+        build: ..
+        container_name: smtp-server
+        restart: always
+        ports:
+            - "1025:1025"
+            - "1080:1080"

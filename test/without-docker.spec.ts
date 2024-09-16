@@ -38,7 +38,7 @@ describe("Mock SMTP server without Docker", () => {
             password,
             secure: true,
             key: fs.readFileSync(path.join(dirname, "..", "keys", "smtp.server.privkey.pem")),
-            cert: fs.readFileSync(path.join(dirname, "..", "keys", "smtp.server.cert.pem")) 
+            cert: fs.readFileSync(path.join(dirname, "..", "keys", "smtp.server.cert.pem"))
         }
         mockSmtpServer = createMockSmtpServer(logger, config, maxMessageCount)
         debug("*** starting server")

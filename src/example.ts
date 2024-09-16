@@ -8,7 +8,7 @@ import nodemailer from "nodemailer"
 import createMockSmtpServer, { SmtpConfig } from "./smtp-server.js"
 
 const dirname = fileURLToPath(new URL(".", import.meta.url))
-const logger = pino({ 
+const logger = pino({
     level: "debug",
     formatters: {
         level: (label) => ({ level: label })
@@ -17,7 +17,7 @@ const logger = pino({
 
 const smtpPort = 1025
 const smtpUsername = "my_smtp_username"
-const smtpPassword ="my_smtp_password"
+const smtpPassword = "my_smtp_password"
 
 const config: SmtpConfig = {
     port: smtpPort,

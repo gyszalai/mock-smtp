@@ -12,7 +12,7 @@ const logger = pino({
     base: null,
     level: process.env.LOGLEVEL || "info",
     formatters: {
-        level (label) {
+        level(label) {
             return { level: label }
         }
     }
@@ -40,7 +40,7 @@ async function start() {
 }
 
 /** Shuts down the SMTP and HTTP servers */
-async function shutdown (exitCode: number) {
+async function shutdown(exitCode: number) {
     logger.warn({ exitCode }, "shutting down...")
     try {
         await server.close()
@@ -51,23 +51,23 @@ async function shutdown (exitCode: number) {
         process.exit(1)
     }
 }
-  
+
 process.on("uncaughtException", function (err) {
     logger.error(err, "uncaughtException")
     shutdown(1)
 })
-  
+
 process.on("unhandledRejection", function (err) {
     logger.error(err, "unhandledRejection")
     shutdown(1)
 })
-  
+
 // SIGTERM handler
 process.on("SIGTERM", () => {
     logger.warn("Caught SIGTERM, exiting...")
     shutdown(0)
 })
-  
+
 // SIGINT handler (CTRL-C)
 process.on("SIGINT", () => {
     logger.warn("Caught SIGINT, exiting...")

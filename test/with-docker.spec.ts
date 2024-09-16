@@ -32,18 +32,15 @@ describe("Mock SMTP server with Docker", () => {
         await removeContainer()
         debug("*** Building image, context path:", contextPath)
         const imgStream = await docker.buildImage(
-            { context: contextPath, src: [
-                "Dockerfile",
-                "dist",
-                "keys",
-                "package.json",
-                "package-lock.json"
-            ] }, { t: imageName }
+            { context: contextPath, src: ["Dockerfile", "dist", "keys", "package.json", "package-lock.json"] },
+            { t: imageName }
         )
         await new Promise((resolve, reject) => {
-            docker.modem.followProgress(imgStream,
-                (err, res) => err ? reject(err) : resolve(res),
-                (data) => debug(data.stream))
+            docker.modem.followProgress(
+                imgStream,
+                (err, res) => (err ? reject(err) : resolve(res)),
+                (data) => debug(data.stream)
+            )
         })
         debug("*** Image built")
         container = await docker.createContainer({
@@ -71,7 +68,12 @@ describe("Mock SMTP server with Docker", () => {
         // const cntStream = await container.attach({ stream: true, stdout: true, stderr: true })
         // cntStream.pipe(process.stdout)
         debug("*** container started")
-        await waitOn({ resources: [`tcp:localhost:${smtpPort}`, `http://localhost:${httpPort}`], delay: 500, timeout: 10000, log: false })
+        await waitOn({
+            resources: [`tcp:localhost:${smtpPort}`, `http://localhost:${httpPort}`],
+            delay: 500,
+            timeout: 10000,
+            log: false
+        })
     })
 
     after(async function () {
@@ -98,4 +100,3 @@ describe("Mock SMTP server with Docker", () => {
     createSmtpServerTests(smtpPort, username, password)
     createApiServerTests(httpPort)
 })
-

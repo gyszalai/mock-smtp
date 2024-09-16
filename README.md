@@ -29,7 +29,6 @@ docker run -p 1025:1025 -p 1080:1080 gyszalai/mock-smtp:latest
 
 ## Using from code
 
-
 ```ts
 import fs from "node:fs"
 import pino from "pino"
@@ -43,7 +42,7 @@ const config: SmtpConfig = {
     password: "my_smtp_password",
     secure: true,
     key: fs.readFileSync("smtp_key.pem"), // private key file in PEM or DER format
-    cert: fs.readFileSync("smtp_cert.pem")  // certificate file in PEM or DER format
+    cert: fs.readFileSync("smtp_cert.pem") // certificate file in PEM or DER format
 }
 
 const mockSmtpServer = createMockSmtpServer(logger, config, 100)
@@ -59,6 +58,4 @@ try {
 } finally {
     await mockSmtpServer.close()
 }
-
 ```
-

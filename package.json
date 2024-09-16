@@ -1,111 +1,111 @@
 {
-  "name": "@gyszalai/mock-smtp",
-  "version": "1.0.0",
-  "description": "Mock SMTP server for integration tests",
-  "main": "dist/smtp-server.js",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "type": "module",
-  "private": true,
-  "author": "Gyula Szalai <gyszalai@gmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gyszalai/mock-smtp.git"
-  },
-  "bugs": {
-    "url": "https://github.com/gyszalai/mock-smtp/issues"
-  },
-  "homepage": "https://github.com/gyszalai/mock-smtp#readme",
-  "keywords": [
-    "mock",
-    "smtp"
-  ],
-  "config": {
-    "docker_ns": "gyszalai"
-  },
-  "mocha": {
-    "diff": true,
-    "color": true,
-    "exit": true,
-    "recursive": true,
-    "extension": [
-      "ts"
+    "name": "@gyszalai/mock-smtp",
+    "version": "1.0.0",
+    "description": "Mock SMTP server for integration tests",
+    "main": "dist/smtp-server.js",
+    "files": [
+        "dist",
+        "src"
     ],
-    "loader": "ts-node/esm",
-    "require": [
-      "ts-node/register"
+    "type": "module",
+    "private": true,
+    "author": "Gyula Szalai <gyszalai@gmail.com>",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gyszalai/mock-smtp.git"
+    },
+    "bugs": {
+        "url": "https://github.com/gyszalai/mock-smtp/issues"
+    },
+    "homepage": "https://github.com/gyszalai/mock-smtp#readme",
+    "keywords": [
+        "mock",
+        "smtp"
     ],
-    "spec": [
-      "test/with-docker.spec.ts",
-      "test/without-docker.spec.ts"
-    ]
-  },
-  "lint-staged": {
-    "*.ts": "eslint --cache --fix"
-  },
-  "engines": {
-    "node": ">=18.14.0"
-  },
-  "scripts": {
-    "prepare": "husky install",
-    "build": "rimraf dist && tsc",
-    "lint": "eslint --ignore-path .gitignore --fix src/**/*.ts",
-    "lint:check": "eslint src/**/*.ts",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "test": "npm run build && mocha",
-    "docker:build": "docker build -t $npm_package_config_docker_ns/$npm_package_name:latest .",
-    "docker:publish": "npm run docker:build && docker tag $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:latest",
-    "prerelease": "git pull && npm run lint && npm run build && npm test",
-    "release": "semantic-release --no-ci",
-    "postrelease": "git push && git push --tags && echo 'released: '$npm_package_version && npm run docker:publish"
-  },
-  "dependencies": {
-    "env-schema": "^6.0.0",
-    "fastify": "^4.13.0",
-    "fastify-plugin": "^4.5.0",
-    "husky": "^9.1.6",
-    "mailparser": "^3.6.3",
-    "pino": "^9.0.4",
-    "smtp-server": "^3.11.0"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.5.0",
-    "@eslint/js": "^9.10.0",
-    "@semantic-release/changelog": "^6.0.2",
-    "@semantic-release/commit-analyzer": "^13.0.0",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/release-notes-generator": "^14.0.1",
-    "@types/chai": "^4.3.4",
-    "@types/debug": "^4.1.7",
-    "@types/dockerode": "^3.3.14",
-    "@types/eslint__js": "^8.42.3",
-    "@types/mailparser": "^3.4.0",
-    "@types/mocha": "^10.0.1",
-    "@types/smtp-server": "^3.5.7",
-    "@types/supertest": "^6.0.2",
-    "@types/wait-on": "^5.3.1",
-    "chai": "^5.1.1",
-    "commitizen": "^4.3.0",
-    "cz-conventional-changelog": "^3.3.0",
-    "dockerode": "^4.0.2",
-    "eslint": "^9.10.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "lint-staged": "^15.2.10",
-    "mocha": "^10.2.0",
-    "prettier": "^3.3.3",
-    "rimraf": "^6.0.1",
-    "semantic-release": "^24.1.1",
-    "source-map-support": "^0.5.21",
-    "supertest": "^7.0.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.6.2",
-    "typescript-eslint": "^8.5.0",
-    "wait-on": "^8.0.1"
-  }
+    "config": {
+        "docker_ns": "gyszalai"
+    },
+    "mocha": {
+        "diff": true,
+        "color": true,
+        "exit": true,
+        "recursive": true,
+        "extension": [
+            "ts"
+        ],
+        "loader": "ts-node/esm",
+        "require": [
+            "ts-node/register"
+        ],
+        "spec": [
+            "test/with-docker.spec.ts",
+            "test/without-docker.spec.ts"
+        ]
+    },
+    "lint-staged": {
+        "*.ts": "eslint --cache --fix"
+    },
+    "engines": {
+        "node": ">=18.14.0"
+    },
+    "scripts": {
+        "prepare": "husky install",
+        "build": "rimraf dist && tsc",
+        "lint": "eslint --ignore-path .gitignore --fix src/**/*.ts",
+        "lint:check": "eslint src/**/*.ts",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "test": "npm run build && mocha",
+        "docker:build": "docker build -t $npm_package_config_docker_ns/$npm_package_name:latest .",
+        "docker:publish": "npm run docker:build && docker tag $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:latest",
+        "prerelease": "git pull && npm run lint && npm run build && npm test",
+        "release": "semantic-release --no-ci",
+        "postrelease": "git push && git push --tags && echo 'released: '$npm_package_version && npm run docker:publish"
+    },
+    "dependencies": {
+        "env-schema": "^6.0.0",
+        "fastify": "^4.13.0",
+        "fastify-plugin": "^4.5.0",
+        "husky": "^9.1.6",
+        "mailparser": "^3.6.3",
+        "pino": "^9.0.4",
+        "smtp-server": "^3.11.0"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^19.5.0",
+        "@commitlint/config-conventional": "^19.5.0",
+        "@eslint/js": "^9.10.0",
+        "@semantic-release/changelog": "^6.0.2",
+        "@semantic-release/commit-analyzer": "^13.0.0",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/release-notes-generator": "^14.0.1",
+        "@types/chai": "^4.3.4",
+        "@types/debug": "^4.1.7",
+        "@types/dockerode": "^3.3.14",
+        "@types/eslint__js": "^8.42.3",
+        "@types/mailparser": "^3.4.0",
+        "@types/mocha": "^10.0.1",
+        "@types/smtp-server": "^3.5.7",
+        "@types/supertest": "^6.0.2",
+        "@types/wait-on": "^5.3.1",
+        "chai": "^5.1.1",
+        "commitizen": "^4.3.0",
+        "cz-conventional-changelog": "^3.3.0",
+        "dockerode": "^4.0.2",
+        "eslint": "^9.10.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "lint-staged": "^15.2.10",
+        "mocha": "^10.2.0",
+        "prettier": "^3.3.3",
+        "rimraf": "^6.0.1",
+        "semantic-release": "^24.1.1",
+        "source-map-support": "^0.5.21",
+        "supertest": "^7.0.0",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.6.2",
+        "typescript-eslint": "^8.5.0",
+        "wait-on": "^8.0.1"
+    }
 }

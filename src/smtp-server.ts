@@ -26,7 +26,7 @@ export default function (logger: Logger, smtpConfig: SmtpConfig, maxMessageCount
         key,
         cert,
         authMethods: ["LOGIN"],
-        onAuth ({ method, username, password }, session, callback) {
+        onAuth({ method, username, password }, session, callback) {
             logger.debug("authenticating, method: " + method)
             if (username === _username && password === _password) {
                 logger.debug("auth OK")
@@ -35,11 +35,11 @@ export default function (logger: Logger, smtpConfig: SmtpConfig, maxMessageCount
             logger.debug("auth FAILED")
             callback(new Error("Auth failed"))
         },
-        onConnect (session, callback) {
+        onConnect(session, callback) {
             logger.debug("client connected")
             return callback() // Accept the connection
         },
-        onData (stream, session, callback) {
+        onData(stream, session, callback) {
             logger.debug("message received")
             simpleParser(stream)
                 .then((parsedMail: ParsedMail) => {
@@ -52,7 +52,7 @@ export default function (logger: Logger, smtpConfig: SmtpConfig, maxMessageCount
     })
 
     /** Starts the SMTP and HTTP servers */
-    async function start () {
+    async function start() {
         await new Promise<void>((resolve, reject) => {
             smtpServer.on("error", reject)
             smtpServer.listen(port, "0.0.0.0", () => {
@@ -67,7 +67,7 @@ export default function (logger: Logger, smtpConfig: SmtpConfig, maxMessageCount
     }
 
     /** Closes the SMTP and HTTP servers */
-    async function close () {
+    async function close() {
         logger.info("closing SMTP server")
         await new Promise<void>((resolve) => {
             smtpServer.close(() => {
@@ -85,6 +85,8 @@ export default function (logger: Logger, smtpConfig: SmtpConfig, maxMessageCount
     }
 
     return {
-        start, close, getMessageStore
+        start,
+        close,
+        getMessageStore
     }
 }

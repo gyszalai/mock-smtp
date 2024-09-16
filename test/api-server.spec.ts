@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import { it, describe } from "mocha"
-import  supertest from "supertest"
+import supertest from "supertest"
 import { SendMailOptions } from "nodemailer"
 
 import messages, { HeaderObject, AddressObject } from "./messages.js"
@@ -120,9 +120,7 @@ export default (httpPort: number): void => {
                 })
         })
         it("DELETE /messages should delete the messages and respond with HTTP 204", async () => {
-            await api
-                .delete("/messages")
-                .expect(204)
+            await api.delete("/messages").expect(204)
             return api
                 .get("/messages")
                 .expect(200)
