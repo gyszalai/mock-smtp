@@ -53,7 +53,7 @@
     "scripts": {
         "prepare": "husky install",
         "build": "rimraf dist && tsc",
-        "lint": "eslint --ignore-path .gitignore --fix src/**/*.ts",
+        "lint": "eslint --fix src/**/*.ts",
         "lint:check": "eslint src/**/*.ts",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
