@@ -1,9 +1,8 @@
 import path from "path"
 import createDebug from "debug"
 import waitOn from "wait-on"
-import "chai"
 import Docker from "dockerode"
-import { describe, before, after } from "mocha"
+import { describe, before, after } from "node:test"
 import { fileURLToPath } from "url"
 
 import createApiServerTests from "./api-server.spec.js"
@@ -27,7 +26,6 @@ describe("Mock SMTP server with Docker", () => {
     const containerName = "mock_smtp_server"
     //
     before(async function () {
-        this.timeout(60000)
         const contextPath = path.join(dirname, "..")
         await removeContainer()
         debug("*** Building image, context path:", contextPath)
@@ -74,14 +72,10 @@ describe("Mock SMTP server with Docker", () => {
             timeout: 10000,
             log: false
         })
-    })
+    }, { timeout: 60000 })
 
     after(async function () {
-        await container.remove({ force: true })
-        debug("*** container removed")
-        const image = await docker.getImage(imageName)
-        image.remove()
-        debug("*** image removed")
+        await removeContainer()
     })
 
     async function removeContainer(): Promise<void> {
@@ -92,6 +86,9 @@ describe("Mock SMTP server with Docker", () => {
             const runningContainer = docker.getContainer(containerName)
             await runningContainer.remove({ force: true })
             debug(`*** container '${containerName}' removed`)
+            const image = await docker.getImage(imageName)
+            image.remove()
+            debug("*** image removed")
         } else {
             debug("*** container is not running, nothing to stop")
         }

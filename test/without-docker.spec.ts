@@ -1,10 +1,10 @@
 import fs from "fs"
 import path from "path"
 import createDebug from "debug"
-import "chai"
 import pino from "pino"
-import { expect } from "chai"
-import { describe, before, after, it } from "mocha"
+import { describe, before, after, it } from "node:test"
+import assert from "node:assert"
+import { isDeepStrictEqual } from "node:util"
 import { fileURLToPath } from "url"
 
 import createMockSmtpServer, { SmtpConfig, MockSmtpServer } from "../dist/smtp-server.js"
@@ -31,7 +31,6 @@ describe("Mock SMTP server without Docker", () => {
     let mockSmtpServer: MockSmtpServer
     let messageStore: MessageStore
     before(async function () {
-        this.timeout(10000)
         const config: SmtpConfig = {
             port: smtpPort,
             username,
@@ -45,7 +44,7 @@ describe("Mock SMTP server without Docker", () => {
         await mockSmtpServer.start()
         messageStore = mockSmtpServer.getMessageStore()
         debug("*** server started")
-    })
+    }, { timeout: 10000 })
 
     after(async function () {
         await mockSmtpServer.close()
@@ -59,65 +58,65 @@ describe("Mock SMTP server without Docker", () => {
         describe("findMessages", () => {
             it("calling with no filters should return all e-mail messages", async () => {
                 const messageList = messageStore.findMessages({}, 100, false)
-                expect(messageList.length).to.be.equal(messages.length)
+                assert.equal(messageList.length, messages.length)
             })
             it("calling with no filters and reverse=true should return all e-mail messages in reverse order", async () => {
                 const messageList = messageStore.findMessages({}, 100, true)
-                expect(messageList.length).to.be.equal(messages.length)
+                assert.equal(messageList.length, messages.length)
                 const reverseMessageIds = [...messages].reverse().map((m) => m.messageId)
-                expect(messageList.map((m) => m.messageId)).to.deep.equal(reverseMessageIds)
+                assert.deepEqual(messageList.map((m) => m.messageId), reverseMessageIds)
             })
             it("calling with count=3 should return only 3 messages", async () => {
                 const count = 3
                 const messageList = messageStore.findMessages({}, count, false)
-                expect(messageList.length).to.be.equal(count)
+                assert.equal(messageList.length, count)
                 const messageIds = [...messages].map((m) => m.messageId).slice(0, count)
-                expect(messageList.map((m) => m.messageId)).to.deep.equal(messageIds)
+                assert.deepEqual(messageList.map((m) => m.messageId), messageIds)
             })
             it("calling with messageType param should return the appropriate e-mail message", async () => {
                 const headers = messages[0].headers as HeaderObject
                 const messageType = headers["x-message-type"]
                 const messageList = messageStore.findMessages({ messageType }, 100, false)
-                expect(messageList.length).to.be.equal(1)
-                expect(messageList[0].messageType).to.equal(messageType)
+                assert.equal(messageList.length, 1)
+                assert.equal(messageList[0].messageType, messageType)
             })
             it("calling with 'from' param should return the appropriate e-mail message", async () => {
                 const from = messages[1].from as AddressObject
                 const messageList = messageStore.findMessages({ from: from.address }, 100, false)
-                expect(messageList.length).to.be.equal(1)
-                expect(messageList[0].from.address).to.equal(from.address)
+                assert.equal(messageList.length, 1)
+                assert.equal(messageList[0].from.address, from.address)
             })
             it("calling with 'from' and 'to' params should return the appropriate e-mail message", async () => {
                 const from = messages[1].from as AddressObject
                 const toArray = messages[1].to as AddressObject[]
                 const to = toArray[0] as AddressObject
                 const messageList = messageStore.findMessages({ from: from.address, to: to.address }, 100, false)
-                expect(messageList.length).to.be.equal(1)
-                expect(messageList[0].from.address).to.equal(from.address)
-                expect(messageList[0].to).to.deep.include(to)
+                assert.equal(messageList.length, 1)
+                assert.equal(messageList[0].from.address, from.address)
+                assert(messageList[0].to?.some(addr => isDeepStrictEqual(addr, to)))
             })
             it("calling with 'to' param should return the appropriate e-mail message", async () => {
                 const toField = messages[1].to as AddressObject[]
                 const to = toField[0]
                 const messageList = messageStore.findMessages({ to: to.address }, 100, false)
-                expect(messageList.length).to.be.equal(2)
-                expect(messageList[0].to).to.deep.include(to)
-                expect(messageList[0].to).to.deep.include(to)
+                assert.equal(messageList.length, 2)
+                assert(messageList[0].to?.some(addr => isDeepStrictEqual(addr, to)))
+                assert(messageList[1].to?.some(addr => isDeepStrictEqual(addr, to)))
             })
             it("calling with 'cc' param should return the appropriate e-mail message", async () => {
                 const ccField = messages[1].cc as AddressObject[]
                 const cc = ccField[0]
                 const messageList = messageStore.findMessages({ cc: cc.address }, 100, false)
-                expect(messageList.length).to.be.equal(2)
-                expect(messageList[0].cc).to.deep.include(cc)
-                expect(messageList[1].cc).to.deep.include(cc)
+                assert.equal(messageList.length, 2)
+                assert(messageList[0].cc?.some(addr => isDeepStrictEqual(addr, cc)))
+                assert(messageList[1].cc?.some(addr => isDeepStrictEqual(addr, cc)))
             })
         })
         describe("clear", () => {
             it("should delete all messages from the message store", async () => {
                 messageStore.clear()
                 const messageList = messageStore.findMessages({}, 100, false)
-                expect(messageList.length).to.be.equal(0)
+                assert.equal(messageList.length, 0)
             })
         })
     })

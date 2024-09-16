@@ -1,7 +1,7 @@
 import createDebug from "debug"
 import nodemailer from "nodemailer"
-import { describe, it } from "mocha"
-import { expect } from "chai"
+import { describe, it } from "node:test"
+import assert from 'node:assert'
 
 import messages from "./messages.js"
 
@@ -21,14 +21,13 @@ export default (smtpPort: number, user: string, pass: string) => {
         auth
     })
 
-    describe("Sending e-mail", function () {
+    describe("Sending e-mail", {timeout: 10000}, function () {
         it("should successfully send all e-mail messages", async function () {
-            this.timeout(10000)
             for (let i = 0; i < messages.length; i++) {
                 debug("Sending message " + i)
                 const info = await transporter.sendMail(messages[i])
                 debug("SMTP info: ", info.response)
-                expect(info.response).to.match(/^250 OK:.+$/)
+                assert.match(info.response, /^250 OK:.+$/)
             }
         })
     })

@@ -27,23 +27,6 @@
         "docker_ns": "gyszalai",
         "docker_image_name": "mock-smtp"
     },
-    "mocha": {
-        "diff": true,
-        "color": true,
-        "exit": true,
-        "recursive": true,
-        "extension": [
-            "ts"
-        ],
-        "loader": "ts-node/esm",
-        "require": [
-            "ts-node/register"
-        ],
-        "spec": [
-            "test/with-docker.spec.ts",
-            "test/without-docker.spec.ts"
-        ]
-    },
     "lint-staged": {
         "*.ts": "eslint --cache --fix"
     },
@@ -57,7 +40,7 @@
         "lint:check": "eslint src/**/*.ts",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "test": "npm run build && mocha",
+        "test": "node --no-warnings --import tsx --test-reporter spec --experimental-test-coverage --test test/without-docker.spec.ts test/with-docker.spec.ts",
         "docker:build:arm64": "docker build --platform linux/arm64/v8 -t $npm_package_config_docker_ns/${npm_package_config_docker_image_name}-arm64:latest .",
         "docker:build:amd64": "docker build --platform linux/amd64 -t $npm_package_config_docker_ns/${npm_package_config_docker_image_name}-amd64:latest . ",
         "docker:build": "npm run docker:build:arm64 && npm run docker:build:amd64",
@@ -94,16 +77,13 @@
         "@semantic-release/commit-analyzer": "^13.0.0",
         "@semantic-release/git": "^10.0.1",
         "@semantic-release/release-notes-generator": "^14.0.1",
-        "@types/chai": "^4.3.4",
         "@types/debug": "^4.1.7",
         "@types/dockerode": "^3.3.14",
         "@types/eslint__js": "^8.42.3",
         "@types/mailparser": "^3.4.0",
-        "@types/mocha": "^10.0.1",
         "@types/smtp-server": "^3.5.7",
         "@types/supertest": "^6.0.2",
         "@types/wait-on": "^5.3.1",
-        "chai": "^5.1.1",
         "commitizen": "^4.3.0",
         "cz-conventional-changelog": "^3.3.0",
         "dockerode": "^4.0.2",
@@ -112,13 +92,12 @@
         "eslint-plugin-prettier": "^5.2.1",
         "husky": "^9.1.6",
         "lint-staged": "^15.2.10",
-        "mocha": "^10.2.0",
         "prettier": "^3.3.3",
         "rimraf": "^6.0.1",
         "semantic-release": "^24.1.1",
         "source-map-support": "^0.5.21",
         "supertest": "^7.0.0",
-        "ts-node": "^10.9.1",
+        "tsx": "^4.19.1",
         "typescript": "^5.6.2",
         "typescript-eslint": "^8.5.0",
         "wait-on": "^8.0.1"
