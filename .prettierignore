@@ -1,0 +1,9 @@
+.DS_Store
+node_modules
+/dist
+
+# Ignore files for PNPM, NPM and YARN
+package-lock.json
+
+# no prettier for generated files
+CHANGELOG.md
