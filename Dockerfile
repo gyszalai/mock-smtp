@@ -4,7 +4,7 @@ RUN adduser -D -u 2000 -g 2000 app
 RUN apk add --update openssl bash curl make g++ gcc && rm -rf /tmp/* /var/cache/apk/*
 
 USER app
-ENV HOME /home/app
+ENV HOME=/home/app
 WORKDIR /home/app
 
 COPY package.json /home/app/
