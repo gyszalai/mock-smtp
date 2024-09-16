@@ -24,7 +24,8 @@
         "smtp"
     ],
     "config": {
-        "docker_ns": "gyszalai"
+        "docker_ns": "gyszalai",
+        "docker_image_name": "mock-smtp"
     },
     "mocha": {
         "diff": true,
@@ -57,8 +58,8 @@
         "format": "prettier --write .",
         "format:check": "prettier --check .",
         "test": "npm run build && mocha",
-        "docker:build": "docker build -t $npm_package_config_docker_ns/$npm_package_name:latest .",
-        "docker:publish": "npm run docker:build && docker tag $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_name:latest",
+        "docker:build": "docker build -t $npm_package_config_docker_ns/$npm_package_config_docker_image_name:latest .",
+        "docker:publish": "npm run docker:build && docker tag $npm_package_config_docker_ns/$npm_package_config_docker_image_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_config_docker_image_name:$npm_package_version && docker push $npm_package_config_docker_ns/$npm_package_config_docker_image_name:latest",
         "prerelease": "git pull && npm run lint && npm run build && npm test",
         "release": "semantic-release --no-ci",
         "postrelease": "git push && git push --tags && echo 'released: '$npm_package_version && npm run docker:publish"
